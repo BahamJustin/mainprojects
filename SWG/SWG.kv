@@ -1,0 +1,374 @@
+WindowManager:
+    TitleWindow:
+    MainMenu:
+    NewGameMenu:
+    CreateUserMenu:
+    DevTestMenu:
+    CharacterMenu:
+    RelationshipMenu:
+    ActionMenu:
+    PlanetMenu:
+    SkillScreen:
+    InventoryScreen:
+    EquipmentScreen:
+    ItemDesc:
+
+<TitleWindow>:
+    name: "title"
+    on_pre_enter: root.getTitleInfo(self)
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: root.userName + " Loaded" 
+            # if root.userExists == True else "No Game Loaded"
+            size_hint: 1, .1
+        BoxLayout:
+            orientation: "horizontal"
+            padding: ("20dp", "20dp")
+            # spacing: "10dp"
+            # size_hint: (1, 1)
+            Button:
+                text: "New Game"
+                size_hint: 1, None
+                on_release: 
+                    app.root.current = "newGame"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Load Game"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "main" if root.userExists == True else "title"
+                    root.manager.transition.direction = "right"
+            Button:
+                text: "Exit Game"
+                size_hint: 1, None
+                on_release: app.stop()
+            # Button:
+                # text: "smd"
+                # size_hint: 1, None
+                # on_release: root.killDB()
+
+<MainMenu>:
+    name: "main"
+    on_pre_enter: root.getMainInfo(self)
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: root.userName + " " + root.gameDate
+            size_hint: 1, .1
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, .5)
+            Button:
+                text: "Character Menu"
+                size_hint: 1, .1
+                on_release: 
+                    app.root.current = "CharacterOptions"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Relationships Menu"
+                size_hint: 1, .1
+                on_release: 
+                    app.root.current = "RelationOptions"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Action Menu"
+                size_hint: 1, .1
+                on_release: 
+                    app.root.current = "ActionOptions"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Planet Menu"
+                size_hint: 1, .1
+                on_release: 
+                    app.root.current = "PlanetOptions"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Dev Menu"
+                size_hint: 1, .1
+                on_release: 
+                    app.root.current = "DevOptions"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Exit Game"
+                size_hint: 1, .1
+                on_release: 
+                    app.root.current = "title"
+                    root.manager.transition.direction = "left"
+
+<NewGameMenu>:
+    name: "newGame"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Are you sure you want to start a new game?"
+            size_hint: 1, .25
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, 1)
+            Button:
+                text: "Yes"
+                size_hint: 1, None
+                on_release: 
+                    root.startNewGame()
+                    app.root.current = "createUser"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "No"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "title"
+                    root.manager.transition.direction = "right"
+
+<CreateUserMenu>:
+    name: "createUser"
+    BoxLayout:
+        orientation: "horizontal"
+        Label:
+            text: "What is your name?"
+            size_hint: 1, .25
+        TextInput:
+            id: name_input
+            size_hint: None, 1
+            width: "100dp"
+            text: ""
+            multiline: False
+            on_text_validate: 
+                root.on_text_validate(self)
+                app.root.current = "main"
+                root.manager.transition.direction = "right"
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, 1)
+            Button:
+                text: "Go Back"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+
+<DevTestMenu>:
+    name: "DevOptions"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Dev Testing Menu"
+            size_hint: 1, .25
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, 1)
+            Button:
+                text: "Advance Time"
+                size_hint: 1, None
+                on_release: 
+                    root.devAdvanceTime()
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            Button:
+                text: "Add Inventory"
+                size_hint: 1, None
+                on_release: 
+                    root.addInventory()
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            Button:
+                text: "Go Back"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+
+<PlanetMenu>:
+    name: "PlanetOptions"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Planet Menu"
+            size_hint: 1, .25
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, 1)
+            Button:
+                text: "Planets"
+                size_hint: 1, None
+                on_release: 
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            Button:
+                text: "Go Back"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+
+<ActionMenu>:
+    name: "ActionOptions"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Action Menu"
+            size_hint: 1, .25
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, 1)
+            Button:
+                text: "Actions"
+                size_hint: 1, None
+                on_release: 
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            Button:
+                text: "Go Back"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+
+<RelationshipMenu>:
+    name: "RelationOptions"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Relationship Menu"
+            size_hint: 1, .25
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, 1)
+            Button:
+                text: "Reltionships"
+                size_hint: 1, None
+                on_release: 
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            Button:
+                text: "Go Back"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+
+<CharacterMenu>:
+    name: "CharacterOptions"
+    on_pre_enter: root.getCharacterInfo(self)
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Character Menu"
+            size_hint: 1, .25
+        Label: 
+            text: root.playerInfo
+            size_hint: 1, .25
+        StackLayout:
+            orientation: "lr-tb"
+            padding: ("20dp", "20dp")
+            spacing: ("20dp", "10dp")
+            size_hint: (1, 1)
+            Button:
+                text: "Inventory"
+                size_hint: 1, None
+                on_release: 
+                    app.root.current = "inventory"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Equipment"
+                size_hint: 1, None
+                on_release: 
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+            Button:
+                text: "Skills"
+                size_hint: 1, None
+                on_release: 
+                    app.root.current = "skills"
+                    root.manager.transition.direction = "left"
+            Button:
+                text: "Back to Main Menu"
+                size_hint: 1, None
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+
+<SkillScreen>:
+    name: "skills"
+    on_pre_enter: root.getSkillInfo(self)
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Player Skills"
+            size_hint: 1, .25
+        Label: 
+            text: root.skillInfo
+            size_hint: 1, .25
+        Button:
+            text: "Back to Character"
+            size_hint: 1, None
+            on_release:
+                app.root.current = "CharacterOptions"
+                root.manager.transition.direction = "right"
+
+<ItemDesc>:
+    name: "ids"
+    BoxLayout:
+        Label:
+            text: root.itemDescName
+        Button:
+            text: "Back to Inventory"
+            size_hint: 1, None
+            on_release:
+                app.root.current = "InventoryScreen"
+                root.manager.transition.direction = "right"
+
+<InventoryScreen>:
+    on_pre_enter: root.updateInv(self)
+    name: "inventory" 
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Player Inventory"
+            size_hint: 1, .25
+        InvTabs:
+            size_hint: 1, .5
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            do_default_tab: False
+            TabbedPanelItem:
+                text: 'Weapons'
+                ScrollScreen:
+                    WeaponStack: 
+                        size_hint: 1, None
+                        height: self.minimum_height  
+                        orientation: "lr-tb"
+                        padding: ("20dp", "20dp")
+                        spacing: "20dp", "20dp"
+            TabbedPanelItem:
+                text: "Misc"
+                ScrollScreen:
+                    MiscStack: 
+                        size_hint: 1, None
+                        height: self.minimum_height  
+                        orientation: "lr-tb"
+                        padding: ("20dp", "20dp")
+                        spacing: "20dp", "20dp"
+        Button:
+            text: "Back to Character"
+            size_hint: 1, None
+            on_release:
+                app.root.current = "CharacterOptions"
+                root.manager.transition.direction = "right"
+
+<ScrollScreen@ScrollView>:   
+
+<EquipmentScreen>:
