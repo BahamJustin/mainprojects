@@ -66,6 +66,7 @@ def newDatabase():
     
 def genGalaxy():
     pg_db.drop_tables(models)
+
     pg_db.create_tables(models)
 
     for planet in planets:
@@ -118,7 +119,8 @@ def genGalaxy():
         Item.create(
             name=item[0],
             itemType = item[1],
-            bonusSkill=item[2]
+            bonusSkill=item[2],
+            inPlayerInventory=0
         )
 
     ### Create Factions
@@ -145,17 +147,19 @@ def randItems():
     # put randmisc into inventory, then view inventory
     ### Specific Items given for differnet starts
     for item in Item.select().where(Item.itemType == "Weapon").order_by(fn.Random()).limit(1):
-        PlayerInventory.create(
+        Item.create(
             name=item.name,
             itemType=item.itemType,
-            bonusSkill=item.bonusSkill
+            bonusSkill=item.bonusSkill,
+            inPlayerInventory=1
         )
 
     for item in Item.select().where(Item.itemType == "Misc").order_by(fn.Random()).limit(1):
-        PlayerInventory.create(
+        Item.create(
             name=item.name,
             itemType=item.itemType,
-            bonusSkill=item.bonusSkill
+            bonusSkill=item.bonusSkill,
+            inPlayerInventory=1
         )
 
 def newUser(name, familyName, race, homePlanet):

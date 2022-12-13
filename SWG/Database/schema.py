@@ -17,6 +17,7 @@ class Settlement(BaseTable):
 class Item(BaseTable):
     itemType = CharField(null=False, index=True)
     bonusSkill = CharField(null=True, index=True)
+    inPlayerInventory = BooleanField(null=False, index=True)
 
     # bonusTrait = CharField(null=True, index=True)
 
@@ -53,6 +54,14 @@ class Actor(BaseTable):
 
     # no crafting skill - instead recipe/skill locked
     # craftingSkill = IntegerField(null=False, index=True)
+
+    # Equipment - most actors have no equipment
+    # headArmor = CharField(null=True, index=True)
+    # chestArmor = CharField(null=True, index=True)
+    # legArmor = CharField(null=True, index=True)
+    # handArmor = CharField(null=True, index=True)
+    equipWeapon = CharField(null=True, index=True)
+    equipMisc = CharField(null=True, index=True)
     
     # traits = ArrayField(null=False, index=True)
     # languages = ArrayField(null=False, index=True)

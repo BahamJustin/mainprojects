@@ -263,7 +263,7 @@ WindowManager:
 
 <CharacterMenu>:
     name: "CharacterOptions"
-    on_pre_enter: root.getCharacterInfo(self)
+    on_pre_enter: root.getPlayerInfo(self)
     BoxLayout:
         orientation: "vertical"
         Label:
@@ -287,8 +287,8 @@ WindowManager:
                 text: "Equipment"
                 size_hint: 1, None
                 on_release: 
-                    app.root.current = "main"
-                    root.manager.transition.direction = "right"
+                    app.root.current = "equipment"
+                    root.manager.transition.direction = "left"
             Button:
                 text: "Skills"
                 size_hint: 1, None
@@ -324,12 +324,14 @@ WindowManager:
     name: "ids"
     BoxLayout:
         Label:
-            text: root.itemDescName
+            text: root.itemDescName + root.itemDescType + root.itemDescSkill
+        Button:"
+            text: "Equip"
         Button:
             text: "Back to Inventory"
             size_hint: 1, None
             on_release:
-                app.root.current = "InventoryScreen"
+                app.root.current = "inventory"
                 root.manager.transition.direction = "right"
 
 <InventoryScreen>:
@@ -372,3 +374,19 @@ WindowManager:
 <ScrollScreen@ScrollView>:   
 
 <EquipmentScreen>:
+    name: "equipment"
+    on_pre_enter: root.getPlayerEquip(self)
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Character Menu"
+            size_hint: 1, .25
+        Label: 
+            text: root.playerEquipment
+            size_hint: 1, .25
+        Button:
+            text: "Back to Main Menu"
+            size_hint: 1, None
+            on_release:
+                app.root.current = "CharacterOptions"
+                root.manager.transition.direction = "right"

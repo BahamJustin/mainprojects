@@ -12,7 +12,7 @@ from playhouse.shortcuts import *
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.metrics import dp
 from kivy.uix.button import Button
 from kivy.properties import StringProperty, ListProperty
@@ -25,11 +25,22 @@ class WindowManager(ScreenManager):
     pass
 
 wm = WindowManager()
-app= App.get_running_app()
+app = App.get_running_app()
 
 class EquipmentScreen(Screen):
     ### Be able to equip items to different equipment slots - equipment affects stats
-    pass
+    playerEquipment = StringProperty()
+
+    def getPlayerEquip(self, *largs):
+        # Head: {User.get().headArmor}
+        # Chest: {User.get().chestArmor}
+        # Legs: {User.get().legArmor}
+        # Hands: {User.get().handArmor}
+        self.playerEquipment = f"""
+        Weapon: {User.get().equipWeapon}
+        Misc: {User.get().equipMisc}"""
+
+    ### need item desc screen for equip button - test by dev equip
 
 class ItemDesc(Screen):
     instance = None
@@ -42,11 +53,12 @@ class ItemDesc(Screen):
         ItemDesc.instance = self
 
     def viewItem(self, name):
-        focusItem = PlayerInventory.get(PlayerInventory.name == name)
+        App.get_running_app().root.current="ids"
+        focusItem = Item.get(Item.name == name)
         self.itemDescName = focusItem.name
         self.itemDescType = focusItem.itemType
         self.itemDescSkill = focusItem.bonusSkill
-        print(name)
+        print(self.itemDescName, self.itemDescType, self.itemDescSkill)
 
 class WeaponStack(StackLayout):
     ### Click Item to see Item Description Screen
@@ -63,19 +75,19 @@ class WeaponStack(StackLayout):
     #     except:
     #         print("FUCK")
 
-    def viewWeapons(self):
+    def viewWeaponsInv(self):
         self.clear_widgets()
-        for i in PlayerInventory.select().where(PlayerInventory.itemType == "Weapon"):
+        for i in Item.select().where(
+            (Item.itemType == "Weapon") & 
+            (Item.inPlayerInventory == 1)):
             size = dp(100)
             dictItem = model_to_dict(i) 
             # print(dictItem['name'])
             invButton = Button(text=dictItem['name'], size_hint=(None, None), size=(size, size))
             self.add_widget(invButton)
             invButton.bind(on_release=lambda x:ItemDesc.instance.viewItem(invButton.text))
-            # READ NAME OF EACH INDIVIDUAL BUTTON
-            # print name with widget.text??
-            # invButton.bind(on_press=lambda x:self.viewScreen())
         # print("-" * 35)
+
 
 class MiscStack(StackLayout):
     instance = None
@@ -84,9 +96,11 @@ class MiscStack(StackLayout):
         super().__init__(**kwargs)
         MiscStack.instance = self
 
-    def viewMisc(self):
+    def viewMiscInv(self):
         self.clear_widgets()
-        for i in PlayerInventory.select().where(PlayerInventory.itemType == "Misc"):
+        for i in Item.select().where(
+            (Item.itemType == "Misc") & 
+            (Item.inPlayerInventory == 0)):
             size = dp(100)
             dictItem = model_to_dict(i) 
             # print(dictItem['name'])
@@ -110,8 +124,8 @@ class InvTabs(TabbedPanel):
 
 class InventoryScreen(Screen):
     def updateInv(self, *largs):
-        WeaponStack.instance.viewWeapons()
-        MiscStack.instance.viewMisc()    
+        WeaponStack.instance.viewWeaponsInv()
+        MiscStack.instance.viewMiscInv()    
 
 class SkillScreen(Screen):
     skillInfo = StringProperty()
@@ -142,7 +156,7 @@ class SkillScreen(Screen):
 class CharacterMenu(Screen):
     playerInfo = StringProperty()
 
-    def getCharacterInfo(self, *largs):
+    def getPlayerInfo(self, *largs):
         self.playerInfo = f"""
         Name: {User.get().name} {User.get().familyName} 
         Age: {User.get().age}                     
@@ -191,7 +205,28 @@ class CreateUserMenu(Screen):
 
 class NewGameMenu(Screen):
     def startNewGame(self):
-        newGame()
+        connection = None
+        try:
+            connection = psycopg2.connect(host='localhost', user='postgres', password='Saints504!')
+        except:
+            print('Database not connected.')
+
+        if connection is not None:
+            connection.autocommit = True
+
+            cur = connection.cursor()
+
+            cur.execute("SELECT datname FROM pg_database;")
+
+            list_database = cur.fetchall()
+
+            if ("galaxy") in list_database:
+                print("Galaxy Loaded")
+                homeMenu()
+            else:
+                print("Starting a new game")
+                newGame()
+            connection.close()
 
 class MainMenu(Screen):
     ### Display current planet Info etc.
@@ -234,5 +269,7 @@ wm.add_widget(ItemDesc(name="ids"))
 class SWGApp(App):
     pass
 
+myapp = SWGApp()
+
 if __name__ == "__main__":
-    SWGApp().run()
+    myapp.run()
