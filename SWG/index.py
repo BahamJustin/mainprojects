@@ -40,8 +40,6 @@ class EquipmentScreen(Screen):
         Weapon: {User.get().equipWeapon}
         Misc: {User.get().equipMisc}"""
 
-    ### need item desc screen for equip button - test by dev equip
-
 class ItemDesc(Screen):
     instance = None
     itemDescName = StringProperty()
@@ -60,20 +58,16 @@ class ItemDesc(Screen):
         self.itemDescSkill = focusItem.bonusSkill
         print(self.itemDescName, self.itemDescType, self.itemDescSkill)
 
+    def equipItem(self, name):
+        focusItem = Item.get(Item.name == name)
+        ### Inveentory JSON article
+        # if inPlayerInventory
+
 class WeaponStack(StackLayout):
-    ### Click Item to see Item Description Screen
     instance = None
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         WeaponStack.instance = self
-
-    ### How to change screens from python file?
-    # def viewScreen(self):
-    #     try:
-    #         wm.current = "ids"
-    #         print("it works?")
-    #     except:
-    #         print("FUCK")
 
     def viewWeaponsInv(self):
         self.clear_widgets()
@@ -82,12 +76,10 @@ class WeaponStack(StackLayout):
             (Item.inPlayerInventory == 1)):
             size = dp(100)
             dictItem = model_to_dict(i) 
-            # print(dictItem['name'])
             invButton = Button(text=dictItem['name'], size_hint=(None, None), size=(size, size))
             self.add_widget(invButton)
+            ### invButton.text only returns name of last item in the for loop
             invButton.bind(on_release=lambda x:ItemDesc.instance.viewItem(invButton.text))
-        # print("-" * 35)
-
 
 class MiscStack(StackLayout):
     instance = None

@@ -323,10 +323,13 @@ WindowManager:
 <ItemDesc>:
     name: "ids"
     BoxLayout:
+        orientation: "vertical"
         Label:
             text: root.itemDescName + root.itemDescType + root.itemDescSkill
-        Button:"
+        Button:
             text: "Equip"
+            size_hint: 1, None
+            on_release: root.equipItem(root.itemDescName)
         Button:
             text: "Back to Inventory"
             size_hint: 1, None

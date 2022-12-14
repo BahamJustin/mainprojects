@@ -29,12 +29,12 @@ race = (
 
 # turn into json files?
 # skills json (dont have to update in database)
-items = (
+items = {
     ("Body Pillow", "Misc", randSkill()),
     ("iPhone With Flappy Bird", "Misc", randSkill()),
     ("Gun", "Weapon", randSkill()),
     ("Lightsaber", "Weapon", randSkill())
-)
+}
 
 professions = []
 
